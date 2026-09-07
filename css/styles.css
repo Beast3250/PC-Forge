@@ -3837,5 +3837,101 @@ body {
   }
 }
 
+/* ===========================================================================
+   Responsive layout refinement
+   Keeps the interface comfortably framed from compact phones through 2K screens.
+   =========================================================================== */
+
+html { overflow-x: clip; }
+img, canvas, svg { max-width: 100%; }
+
+/* Let grid and flex children shrink instead of pushing content out of frame. */
+.page, .section-head > *, .builder > *, .checkout > *, .studio-header > *, .card,
+.build-card, .contact-card, .hud-item, .opt-info, .cart-row-left { min-width: 0; }
+
+.nav { padding-inline: clamp(16px, 4.5vw, 112px); }
+
+.page {
+  width: min(100%, 1840px);
+  margin-inline: auto;
+  padding-inline: clamp(18px, 4.5vw, 112px);
+  padding-bottom: clamp(72px, 7vw, 132px);
+}
+
+.home-hero, .store-hero-content, .studio-header, .hero { max-width: 1680px; margin-inline: auto; }
+
+.grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: clamp(18px, 1.5vw, 30px); }
+.builds-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(20px, 1.8vw, 32px); }
+
+.card, .build-card, .about-card, .contact-card, .bag, .pay, .perf, .picker {
+  border-radius: clamp(16px, 1.15vw, 22px);
+}
+
+.card h3, .build-card-body h3, .contact-link, .hud-val, .opt-name, .opt-spec { overflow-wrap: anywhere; }
+
+/* A width-aware height keeps the 3D model in frame on laptops and 2K displays. */
+.canvas-holder.large-holder { height: clamp(460px, 42vw, 760px); }
+.chassis-3d-hud { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+@media (min-width: 1680px) {
+  .nav { gap: 28px; }
+  .nav-links { gap: clamp(24px, 1.7vw, 38px); }
+  .home-hero { min-height: min(78vh, 820px); padding-block: clamp(72px, 6vw, 116px); }
+  .hero-glitch-title { font-size: clamp(4.8rem, 5vw, 6.6rem); }
+  .grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+}
+
+@media (max-width: 1024px) {
+  .page { width: 100%; }
+  .canvas-holder.large-holder { height: clamp(420px, 58vw, 600px); }
+}
+
+@media (max-width: 768px) {
+  .page { padding-inline: clamp(14px, 4vw, 22px); padding-bottom: 76px; }
+  .nav { padding-inline: clamp(14px, 4vw, 22px); gap: 10px; }
+
+  /* Preserve useful side-by-side actions where the viewport has room. */
+  .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .hero-actions .primary, .hero-actions .secondary, .glow-btn {
+    width: 100%; min-height: 48px; padding-inline: 16px;
+  }
+
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch;
+    gap: 0; padding: 12px;
+  }
+  .stat-pill { padding: 4px 8px; }
+  .stat-div { display: none; }
+
+  .canvas-holder.large-holder { height: clamp(340px, 105vw, 500px); }
+  .viewport-toolbar { gap: 10px; }
+  .dual-argb-controls { flex-wrap: wrap; justify-content: flex-start; }
+  .argb-control-group { min-width: min(100%, 155px); }
+  .chassis-3d-hud { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  .card-actions { flex-direction: row; }
+  .card-actions .btn-build-seat, .card-actions .add { flex: 1 1 0; min-width: 0; }
+}
+
+@media (max-width: 480px) {
+  .page, .nav { padding-inline: 14px; }
+  .home-hero { padding-inline: 14px; }
+  .hero-actions { gap: 10px; }
+  .hero-actions .primary, .hero-actions .secondary { font-size: 13px; padding-inline: 12px; }
+  .card-actions { flex-direction: row; }
+  .canvas-holder.large-holder { height: clamp(330px, 108vw, 440px); }
+  .hud-item { padding: 8px; }
+}
+
+@media (max-width: 374px) {
+  .nav { gap: 6px; }
+  .logo { font-size: 1.05rem; }
+  .cart-btn { gap: 6px; padding-inline: 10px; font-size: 12px; }
+  .hero-actions, .card-actions { grid-template-columns: 1fr; flex-direction: column; }
+  .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .stat-pill:last-child { grid-column: 1 / -1; }
+  .chassis-3d-hud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .argb-control-group { width: 100%; }
+}
 
 
