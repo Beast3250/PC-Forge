@@ -346,7 +346,7 @@ function route() {
   const targetPage = $(`page-${page}`);
   if (targetPage) targetPage.classList.remove("hidden");
 
-  document.querySelectorAll(".nav-link").forEach((a) => {
+  document.querySelectorAll(".nav-link, .mobile-link").forEach((a) => {
     const route = a.dataset.route;
     const isAct =
       (page === "home" && route === "/home") ||
@@ -358,6 +358,7 @@ function route() {
   });
 
   closeCart();
+  closeMobileNav();
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   if (page === "builder" && preview3DVisible) {
@@ -373,6 +374,37 @@ function openCart() {
 function closeCart() {
   $("drawer").classList.remove("open");
   $("drawer").setAttribute("aria-hidden", "true");
+}
+
+// Mobile Navigation Drawer Controls
+function openMobileNav() {
+  const nav = $("mobileNav");
+  const toggle = $("menuToggle");
+  if (!nav) return;
+  nav.classList.add("open");
+  nav.setAttribute("aria-hidden", "false");
+  if (toggle) toggle.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeMobileNav() {
+  const nav = $("mobileNav");
+  const toggle = $("menuToggle");
+  if (!nav) return;
+  nav.classList.remove("open");
+  nav.setAttribute("aria-hidden", "true");
+  if (toggle) toggle.classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+function toggleMobileNav() {
+  const nav = $("mobileNav");
+  if (!nav) return;
+  if (nav.classList.contains("open")) {
+    closeMobileNav();
+  } else {
+    openMobileNav();
+  }
 }
 
 // ==========================================================================
@@ -1490,8 +1522,11 @@ document.addEventListener("click", (e) => {
     copyText(val, `Copied: ${val}`);
   }
 
-  // Close Cart on link navigation
-  if (e.target.closest("[data-link]")) closeCart();
+  // Close Cart and Mobile Nav on link navigation
+  if (e.target.closest("[data-link]")) {
+    closeCart();
+    closeMobileNav();
+  }
 });
 
 // Navigation Cart Drawer
@@ -1501,6 +1536,38 @@ $("drawer").addEventListener("click", (e) => {
   if (e.target === $("drawer")) closeCart();
 });
 $("goCheckout").addEventListener("click", closeCart);
+
+// Mobile Nav Toggle & Listeners
+const menuToggle = $("menuToggle");
+if (menuToggle) {
+  menuToggle.addEventListener("click", toggleMobileNav);
+}
+
+const mobileNavClose = $("mobileNavClose");
+if (mobileNavClose) {
+  mobileNavClose.addEventListener("click", closeMobileNav);
+}
+
+const mobileNav = $("mobileNav");
+if (mobileNav) {
+  mobileNav.addEventListener("click", (e) => {
+    if (e.target === mobileNav) closeMobileNav();
+  });
+}
+
+// Window Escape & Resize Handlers
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeMobileNav();
+    closeCart();
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 768) {
+    closeMobileNav();
+  }
+});
 
 // Builder: Add full build to cart
 $("addBuildToCart").addEventListener("click", () => {
