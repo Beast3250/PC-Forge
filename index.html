@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PC FORGE — Next-Gen Hardware & 3D Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Three.js and OrbitControls for 3D PC preview -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- Screen 1: HI GAMERS Intro Screen -->
+    <section class="intro" id="intro">
+      <div class="intro-glow"></div>
+      <p class="intro-kicker">Scroll down to explore the forge</p>
+      <h1 class="intro-title">
+        <span>HI</span>
+        <span>GAMERS</span>
+      </h1>
+      <button class="intro-enter-btn" id="introEnterBtn" type="button">
+        <span>Enter Forge</span>
+        <span class="scroll-arrow">↓</span>
+      </button>
+      <div class="intro-hint">
+        <span class="scroll-line"></span>
+        <span>scroll down for homepage</span>
+      </div>
+    </section>
+
+    <!-- App Container -->
+    <div class="app" id="app">
+      <header class="nav" id="mainNav">
+        <a href="#/home" class="logo" data-link>PC<span>FORGE</span></a>
+        <nav class="nav-links">
+          <a href="#/home" data-link class="nav-link" data-route="/home">Home</a>
+          <a href="#/" data-link class="nav-link" data-route="/">Store</a>
+          <a href="#/builder" data-link class="nav-link" data-route="/builder">Build PC</a>
+          <a href="#/about" data-link class="nav-link" data-route="/about">About</a>
+          <a href="#/checkout" data-link class="nav-link" data-route="/checkout">Buy</a>
+        </nav>
+        <button class="cart-btn" id="cartBtn" type="button" aria-label="Open cart">
+          <span>Cart</span>
+          <b id="cartCount">0</b>
+        </button>
+      </header>
+
+      <main>
+        <!-- Homepage Section -->
+        <section class="page page-home" id="page-home">
+          <!-- Cue to return up to HI GAMERS -->
+          <div class="return-cue" id="returnToIntro">
+            <span class="cue-arrow">↑</span>
+            <span>Scroll up to return to HI GAMERS</span>
+          </div>
+
+          <!-- Hero Section with Animated 3D Component Background -->
+          <div class="home-hero">
+            <!-- 3D Component Animation Layer -->
+            <div class="home-3d-bg" id="home3dBg" aria-hidden="true">
+              <div class="floating-item float-gpu">
+                <div class="card-3d-inner">
+                  <span class="chip-tag">RTX 5090</span>
+                  <div class="chip-hologram"></div>
+                  <div class="fan-duo">
+                    <span class="blade-spin"></span>
+                    <span class="blade-spin"></span>
+                  </div>
+                  <small>32GB GDDR7 · 4K ULTRA</small>
+                </div>
+              </div>
+
+              <div class="floating-item float-cpu">
+                <div class="card-3d-inner">
+                  <span class="chip-tag">9800X3D</span>
+                  <div class="chip-die"></div>
+                  <small>3D V-CACHE · 5.2GHz</small>
+                </div>
+              </div>
+
+              <div class="floating-item float-ram">
+                <div class="card-3d-inner">
+                  <span class="chip-tag">DOMINATOR RGB</span>
+                  <div class="rgb-strip"></div>
+                  <small>CORSAIR TITANIUM</small>
+                </div>
+              </div>
+
+              <div class="floating-item float-cooler">
+                <div class="card-3d-inner">
+                  <span class="chip-tag">360 AIO LCD</span>
+                  <div class="pump-ring"></div>
+                  <small>NZXT KRAKEN ELITE</small>
+                </div>
+              </div>
+
+              <div class="cyber-grid"></div>
+              <div class="ambient-glow cyan"></div>
+              <div class="ambient-glow magenta"></div>
+            </div>
+
+            <div class="home-hero-content">
+              <span class="eyebrow pulse">★ Next-Gen Gaming Architecture ★</span>
+              <h1 class="hero-glitch-title">FORGE YOUR ULTIMATE MACHINE.</h1>
+              <p class="hero-lede">
+                Experience market-peak PC hardware. Panoramic full-glass chassis, customizable dual ARGB thermal loops, and real-time custom 3D PC assembly.
+              </p>
+
+              <div class="hero-actions">
+                <a href="#/builder" data-link class="primary glow-btn">
+                  <span>Open 3D PC Builder</span>
+                  <span class="btn-icon">⚡</span>
+                </a>
+                <a href="#/" data-link class="secondary">
+                  <span>Browse Components</span>
+                </a>
+              </div>
+
+              <div class="hero-stats">
+                <div class="stat-pill">
+                  <strong>Full-Glass Fishbowl</strong>
+                  <span>Panoramic Case</span>
+                </div>
+                <div class="stat-div"></div>
+                <div class="stat-pill">
+                  <strong>Independent ARGB</strong>
+                  <span>Fans & Coolers</span>
+                </div>
+                <div class="stat-div"></div>
+                <div class="stat-pill">
+                  <strong>Liquid & Air</strong>
+                  <span>Thermal Engine</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Brand Sponsorship Infinite Sliding Marquee at Border -->
+          <div class="brand-marquee-wrap" id="brandMarqueeWrap">
+            <div class="brand-marquee-border"></div>
+            <div class="marquee-track" id="marqueeTrack"></div>
+            <div class="brand-marquee-border bottom"></div>
+          </div>
+
+          <!-- Featured PC Builds Showcase Section -->
+          <div class="featured-builds-section" id="featuredBuilds">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Masterpiece Engineering</p>
+                <h2>Pre-Forged Flagship Systems</h2>
+              </div>
+              <p class="section-desc">
+                Fully tuned, stress-tested, and liquid-cooled rigs built around current flagship components.
+              </p>
+            </div>
+
+            <div class="builds-grid" id="featuredBuildsGrid"></div>
+          </div>
+
+          <!-- Dedicated Scroll Destination: "Click me to Open the Buy area" -->
+          <div class="buy-portal-section" id="buyPortalSection">
+            <div class="buy-portal-glow"></div>
+            <div class="buy-portal-inner">
+              <span class="portal-badge">⚡ DIRECT STORE ACCESS ⚡</span>
+              <h2>Ready to assemble your dream setup?</h2>
+              <p>Explore all available processors, cards, high-speed RAM, and motherboards in our live stock catalog.</p>
+              
+              <button class="buy-portal-btn" id="openBuyAreaBtn" type="button">
+                <span class="portal-pulse-ring"></span>
+                <span class="portal-btn-content">
+                  <span class="sparkle">✦</span>
+                  <strong>Click me to Open the Buy area</strong>
+                  <span class="arrow-motion">→</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Store / Buy Page Section with Deep Glowing Starry & Nebula Background -->
+        <section class="page hidden" id="page-store">
+          <!-- Animated Glowing Starry & Cosmic Nebula Canvas -->
+          <canvas class="store-star-bg" id="storeStarBg" aria-hidden="true"></canvas>
+
+          <div class="hero store-hero-content">
+            <p class="eyebrow">Direct Inventory · Verified Silicon</p>
+            <h2>Buy the core of your machine.</h2>
+            <p class="lede">
+              CPUs, GPUs, memory, coolers, and boards — Kingston, Corsair, Samsung RAM, 360mm AIOs & dual-tower air coolers ready for cart.
+            </p>
+          </div>
+
+          <div class="filters" id="filters">
+            <button class="chip active" data-filter="all">All Components</button>
+            <button class="chip" data-filter="case">Cases / Cabinets</button>
+            <button class="chip" data-filter="cpu">Processors (CPU)</button>
+            <button class="chip" data-filter="gpu">Graphics Cards (GPU)</button>
+            <button class="chip" data-filter="ram">Memory (RAM)</button>
+            <button class="chip" data-filter="cooler">Cooling (Liquid & Air)</button>
+            <button class="chip" data-filter="mobo">Motherboards</button>
+          </div>
+
+          <div class="grid" id="productGrid"></div>
+        </section>
+
+        <!-- Builder Page Section with Panoramic Full-Glass 3D Rig & Dual ARGB Controls -->
+        <section class="page hidden" id="page-builder">
+          <div class="hero">
+            <div class="hero-builder-head">
+              <div>
+                <p class="eyebrow">Real-Time Rig Simulation</p>
+                <h2>Build your own PC.</h2>
+                <p class="lede">
+                  Select components to seat them into the full-glass panoramic chassis. Customize fan and cooler ARGB lighting with live performance analytics.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="builder">
+            <div class="chassis-container">
+              <!-- Preview Header with 3D/2D Toggle -->
+              <div class="preview-bar">
+                <div class="preview-mode-info">
+                  <span class="status-indicator"></span>
+                  <span id="previewStatusText">Panoramic Full-Glass Rig · Dual ARGB Control</span>
+                </div>
+                <button class="preview-toggle-btn" id="togglePreviewBtn" type="button">
+                  <span class="toggle-icon" id="toggleIcon">👁️</span>
+                  <span id="togglePreviewText">Hide Preview</span>
+                </button>
+              </div>
+
+              <!-- 3D PC Rig Viewport (Full-Glass Panoramic Case with ARGB Controllers) -->
+              <div class="chassis-3d-wrap large-viewport" id="chassis3DWrap">
+                <div class="viewport-toolbar">
+                  <!-- Left side: Camera Presets -->
+                  <div class="camera-angles" title="Camera Angles">
+                    <button type="button" class="cam-btn active" data-cam="iso" title="Isometric 3/4 Angle">3/4 View</button>
+                    <button type="button" class="cam-btn" data-cam="side" title="Side Tempered Glass View">Side Glass</button>
+                    <button type="button" class="cam-btn" data-cam="front" title="Front Intake View">Front</button>
+                    <button type="button" class="cam-btn" data-cam="close" title="Internal Hardware Close-up">Internal</button>
+                    <button type="button" class="cam-btn" id="reset3DCamera" title="Reset Camera">↺ Reset</button>
+                  </div>
+
+                  <!-- Center: Quick Case / Cabinet Switcher -->
+                  <div class="case-quick-select" title="Switch Cabinet / Case in 3D">
+                    <span class="case-quick-label">🔲 CASE:</span>
+                    <select id="caseQuickSelect" class="case-select-dropdown" aria-label="Select PC Case">
+                      <option value="case-lianli-o11">Lian Li O11 Vision Chrome</option>
+                      <option value="case-corsair-6500x">Corsair 6500X Dual-Chamber</option>
+                      <option value="case-nzxt-h9">NZXT H9 Flow Panoramic</option>
+                      <option value="case-fractal-north">Fractal North XL (Wood)</option>
+                      <option value="case-thunder-armor">Thunder Armorbox (Armor)</option>
+                    </select>
+                  </div>
+
+                  <!-- Right side: Independent Fan & Cooler ARGB Controllers -->
+                  <div class="dual-argb-controls">
+                    <!-- Fan ARGB Controller -->
+                    <div class="argb-control-group" title="Fans ARGB Color">
+                      <span class="argb-group-label">🌪️ FANS</span>
+                      <div class="argb-swatches" id="fanSwatches">
+                        <button type="button" class="rgb-swatch cyan active" data-fan-color="cyan" title="Cyber Cyan"></button>
+                        <button type="button" class="rgb-swatch pink" data-fan-color="pink" title="Neon Pink"></button>
+                        <button type="button" class="rgb-swatch green" data-fan-color="green" title="Acid Green"></button>
+                        <button type="button" class="rgb-swatch purple" data-fan-color="purple" title="Electric Purple"></button>
+                        <button type="button" class="rgb-swatch white" data-fan-color="white" title="Crystal White"></button>
+                        <button type="button" class="rgb-swatch gold" data-fan-color="gold" title="Inferno Gold"></button>
+                      </div>
+                    </div>
+
+                    <!-- Cooler ARGB Controller -->
+                    <div class="argb-control-group" title="Cooler ARGB Color">
+                      <span class="argb-group-label">❄️ COOLER</span>
+                      <div class="argb-swatches" id="coolerSwatches">
+                        <button type="button" class="rgb-swatch cyan active" data-cooler-color="cyan" title="Cyber Cyan"></button>
+                        <button type="button" class="rgb-swatch pink" data-cooler-color="pink" title="Neon Pink"></button>
+                        <button type="button" class="rgb-swatch green" data-cooler-color="green" title="Acid Green"></button>
+                        <button type="button" class="rgb-swatch purple" data-cooler-color="purple" title="Electric Purple"></button>
+                        <button type="button" class="rgb-swatch white" data-cooler-color="white" title="Crystal White"></button>
+                        <button type="button" class="rgb-swatch gold" data-cooler-color="gold" title="Inferno Gold"></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Visual Quick Case Switcher Pill Bar -->
+                <div class="case-pills-bar" id="casePillsBar" title="Click to immediately swap PC Case in 3D">
+                  <span class="case-pills-title">CHASSIS:</span>
+                  <button type="button" class="case-pill active" data-case-pick="case-lianli-o11" title="Lian Li O11 Vision Chrome">
+                    <span class="case-pill-icon">💎</span>
+                    <span class="case-pill-txt">Lian Li O11 Chrome</span>
+                  </button>
+                  <button type="button" class="case-pill" data-case-pick="case-corsair-6500x" title="Corsair 6500X Dual-Chamber Arctic White">
+                    <span class="case-pill-icon">⛵</span>
+                    <span class="case-pill-txt">Corsair 6500X White</span>
+                  </button>
+                  <button type="button" class="case-pill" data-case-pick="case-nzxt-h9" title="NZXT H9 Flow Panoramic Matte Black">
+                    <span class="case-pill-icon">🟣</span>
+                    <span class="case-pill-txt">NZXT H9 Flow</span>
+                  </button>
+                  <button type="button" class="case-pill" data-case-pick="case-fractal-north" title="Fractal Design North XL American Walnut">
+                    <span class="case-pill-icon">🌲</span>
+                    <span class="case-pill-txt">Fractal North XL</span>
+                  </button>
+                  <button type="button" class="case-pill" data-case-pick="case-thunder-armor" title="Thunder Armorbox Heavy Mech Armor">
+                    <span class="case-pill-icon">⚡</span>
+                    <span class="case-pill-txt">Thunder Armorbox</span>
+                  </button>
+                </div>
+
+                <div class="canvas-holder large-holder" id="canvasHolder">
+                  <canvas id="chassis3DCanvas"></canvas>
+                </div>
+
+                <!-- 3D Overlay HUD displaying installed parts -->
+                <div class="chassis-3d-hud" id="chassis3DHud">
+                  <div class="hud-item seated" data-slot="case" title="Click to switch Case / Cabinet">
+                    <span class="hud-label">Chassis ▾</span>
+                    <strong class="hud-val" id="hudCase">Lian Li O11 Vision</strong>
+                  </div>
+                  <div class="hud-item" data-slot="mobo" title="Click to choose Motherboard">
+                    <span class="hud-label">Motherboard ▾</span>
+                    <strong class="hud-val" id="hudMobo">None</strong>
+                  </div>
+                  <div class="hud-item" data-slot="cpu" title="Click to choose CPU">
+                    <span class="hud-label">Processor ▾</span>
+                    <strong class="hud-val" id="hudCpu">None</strong>
+                  </div>
+                  <div class="hud-item" data-slot="cooler" title="Click to choose Cooler">
+                    <span class="hud-label">Cooling ▾</span>
+                    <strong class="hud-val" id="hudCooler">None</strong>
+                  </div>
+                  <div class="hud-item" data-slot="ram" title="Click to choose RAM">
+                    <span class="hud-label">Memory ▾</span>
+                    <strong class="hud-val" id="hudRam">None</strong>
+                  </div>
+                  <div class="hud-item" data-slot="gpu" title="Click to choose GPU">
+                    <span class="hud-label">Graphics Card ▾</span>
+                    <strong class="hud-val" id="hudGpu">None</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Classic 2D Chassis Slot View ("like it showed before") -->
+              <div class="chassis-wrap hidden" id="chassis2DWrap">
+                <div class="chassis" id="chassis">
+                  <div class="case-frame">
+                    <div class="case-glass">
+                      <div class="fan fan-tl"></div>
+                      <div class="fan fan-bl"></div>
+                      <div class="mobo-plate">
+                        <button class="slot" data-slot="case" type="button">
+                          <small>01</small>
+                          <strong>Cabinet</strong>
+                          <span class="slot-name">Lian Li O11 Vision</span>
+                        </button>
+                        <button class="slot" data-slot="mobo" type="button">
+                          <small>02</small>
+                          <strong>Motherboard</strong>
+                          <span class="slot-name">Empty</span>
+                        </button>
+                        <button class="slot" data-slot="cpu" type="button">
+                          <small>03</small>
+                          <strong>CPU</strong>
+                          <span class="slot-name">Empty</span>
+                        </button>
+                        <button class="slot" data-slot="cooler" type="button">
+                          <small>04</small>
+                          <strong>Cooler</strong>
+                          <span class="slot-name">Empty</span>
+                        </button>
+                        <button class="slot" data-slot="ram" type="button">
+                          <small>05</small>
+                          <strong>RAM</strong>
+                          <span class="slot-name">Empty</span>
+                        </button>
+                        <button class="slot gpu-slot" data-slot="gpu" type="button">
+                          <small>06</small>
+                          <strong>GPU</strong>
+                          <span class="slot-name">Empty</span>
+                        </button>
+                      </div>
+                      <div class="psu-bar"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Builder Control & Metric Panel -->
+            <aside class="builder-panel">
+              <div class="perf">
+                <div class="perf-head">
+                  <h3>Performance</h3>
+                  <span id="perfGrade">—</span>
+                </div>
+                <div class="meter">
+                  <div class="meter-label"><span>Gaming</span><b id="gameVal">0%</b></div>
+                  <div class="bar"><i id="gameBar"></i></div>
+                </div>
+                <div class="meter">
+                  <div class="meter-label"><span>Creation</span><b id="createVal">0%</b></div>
+                  <div class="bar"><i id="createBar"></i></div>
+                </div>
+                <div class="meter">
+                  <div class="meter-label"><span>vs market peak</span><b id="peakVal">0%</b></div>
+                  <div class="bar"><i id="peakBar"></i></div>
+                </div>
+                <p class="bottleneck" id="bottleneck">Select parts to see the live read.</p>
+              </div>
+
+              <div class="picker" id="picker"></div>
+
+              <button class="primary full glow-btn" id="addBuildToCart" type="button">
+                Add this build to cart
+              </button>
+            </aside>
+          </div>
+        </section>
+
+        <!-- About & Contact Page Section -->
+        <section class="page hidden" id="page-about">
+          <div class="hero">
+            <p class="eyebrow">Who We Are · Craftsmanship First</p>
+            <h2>About PC Forge.</h2>
+            <p class="lede">
+              Founded by hardware enthusiasts to eliminate compromises. We curate, test, and architect custom gaming computers and high-performance workstations.
+            </p>
+          </div>
+
+          <div class="about-grid">
+            <div class="about-card">
+              <div class="about-icon">⚡</div>
+              <h3>Precision Engineering</h3>
+              <p>Every motherboard, card, cooler, and processor is rigorously stress-tested for thermal headroom, signal integrity, and silent acoustic profiles.</p>
+            </div>
+            <div class="about-card">
+              <div class="about-icon">❄️</div>
+              <h3>Thermal Mastery</h3>
+              <p>Custom liquid hardline routing and high-static-pressure fan configurations ensure your machine stays ice-cold under peak 4K ultra workloads.</p>
+            </div>
+            <div class="about-card">
+              <div class="about-icon">🛡️</div>
+              <h3>Guaranteed Quality</h3>
+              <p>Direct authentic components sourced from official partners: NVIDIA, AMD, Intel, ASUS ROG, MSI, Corsair, Kingston, and Samsung.</p>
+            </div>
+          </div>
+
+          <!-- Contact Section -->
+          <div class="contact-section">
+            <div class="contact-head">
+              <p class="eyebrow">Get In Touch · Global Support</p>
+              <h2>Contact Our Architects</h2>
+              <p class="contact-sub">Have a custom build inquiry or need hardware consultation? Reach out directly.</p>
+            </div>
+
+            <div class="contact-cards-row">
+              <!-- Email Card -->
+              <div class="contact-card">
+                <div class="contact-card-icon">✉️</div>
+                <h4>Email Support</h4>
+                <a href="mailto:sufiyanhasan067@gmail.com" class="contact-link">sufiyanhasan067@gmail.com</a>
+                <button type="button" class="copy-btn" id="copyEmailBtn" data-copy="sufiyanhasan067@gmail.com">
+                  Copy Email
+                </button>
+              </div>
+
+              <!-- Phone Card -->
+              <div class="contact-card">
+                <div class="contact-card-icon">📞</div>
+                <h4>Direct Phone / WhatsApp</h4>
+                <a href="tel:+923271992914" class="contact-link">+92 3271992914</a>
+                <button type="button" class="copy-btn" id="copyPhoneBtn" data-copy="+92 3271992914">
+                  Call / Copy
+                </button>
+              </div>
+            </div>
+
+            <!-- Contact Message Form -->
+            <form class="contact-form" id="contactInquiryForm">
+              <h3>Send a Message</h3>
+              <div class="form-row">
+                <label>Name<input required type="text" placeholder="Your name" /></label>
+                <label>Email<input required type="email" placeholder="you@email.com" /></label>
+              </div>
+              <label>Message<textarea rows="4" required placeholder="Tell us about your target resolution, budget, or hardware questions..."></textarea></label>
+              <button class="primary glow-btn" type="submit">Transmit Message ⚡</button>
+            </form>
+
+            <!-- Official PC Forge Motto on the Final Line of Contact Section -->
+            <div class="forge-motto-wrap">
+              <div class="motto-divider"></div>
+              <p class="forge-motto-text">“FORGED FOR SUPREMACY. BUILT FOR GLORY. ZERO COMPROMISE.”</p>
+              <div class="motto-divider"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Checkout Page Section -->
+        <section class="page hidden" id="page-checkout">
+          <div class="hero">
+            <p class="eyebrow">Checkout</p>
+            <h2>Buying section.</h2>
+            <p class="lede">Review the bag, confirm the order, walk out with a quieter machine.</p>
+          </div>
+
+          <div class="checkout">
+            <div class="bag" id="checkoutBag"></div>
+            <form class="pay" id="payForm">
+              <h3>Delivery</h3>
+              <label>Name<input required name="name" placeholder="Your name" /></label>
+              <label>Email<input required type="email" name="email" placeholder="you@mail.com" /></label>
+              <label>Address<input required name="address" placeholder="Street, city" /></label>
+              <div class="pay-row">
+                <span>Total</span>
+                <strong id="checkoutTotal">$0</strong>
+              </div>
+              <button class="primary full" type="submit">Place order</button>
+              <p class="fine">Demo checkout — nothing is charged.</p>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Cart Drawer -->
+    <aside class="drawer" id="drawer" aria-hidden="true">
+      <div class="drawer-panel">
+        <div class="drawer-head">
+          <h3>Shopping Bag</h3>
+          <button type="button" id="closeCart" class="ghost">Close</button>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="drawer-foot">
+          <div class="pay-row">
+            <span>Subtotal</span>
+            <strong id="cartTotal">$0</strong>
+          </div>
+          <a href="#/checkout" data-link class="primary full" id="goCheckout">Proceed to Checkout</a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
