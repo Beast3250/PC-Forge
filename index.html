@@ -20,19 +20,27 @@
 
     <!-- Screen 1: HI GAMERS Intro Screen -->
     <section class="intro" id="intro">
-      <div class="intro-glow"></div>
-      <p class="intro-kicker">Scroll down to explore the forge</p>
-      <h1 class="intro-title">
-        <span>HI</span>
-        <span>GAMERS</span>
-      </h1>
-      <button class="intro-enter-btn" id="introEnterBtn" type="button">
-        <span>Enter Forge</span>
-        <span class="scroll-arrow">↓</span>
-      </button>
-      <div class="intro-hint">
-        <span class="scroll-line"></span>
-        <span>scroll down for homepage</span>
+      <div class="intro-glow" aria-hidden="true"></div>
+      <div class="intro-frame">
+        <div class="intro-top">
+          <p class="intro-kicker">Scroll down to explore the forge</p>
+        </div>
+        <div class="intro-center">
+          <h1 class="intro-title">
+            <span>HI</span>
+            <span>GAMERS</span>
+          </h1>
+          <button class="intro-enter-btn" id="introEnterBtn" type="button">
+            <span>Enter Forge</span>
+            <span class="scroll-arrow">↓</span>
+          </button>
+        </div>
+        <div class="intro-bottom">
+          <div class="intro-hint" id="introHint" role="button" tabindex="0" aria-label="Scroll to enter forge">
+            <span class="scroll-line"></span>
+            <span>scroll down for homepage</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -237,16 +245,24 @@
         </section>
 
         <!-- Builder Page Section with Panoramic Full-Glass 3D Rig & Dual ARGB Controls -->
-        <section class="page hidden" id="page-builder">
-          <div class="hero">
-            <div class="hero-builder-head">
-              <div>
-                <p class="eyebrow">Real-Time Rig Simulation</p>
-                <h2>Build your own PC.</h2>
-                <p class="lede">
-                  Select components to seat them into the full-glass panoramic chassis. Customize fan and cooler ARGB lighting with live performance analytics.
-                </p>
+        <section class="page page-builder-studio hidden" id="page-builder">
+          <div class="studio-header">
+            <div class="studio-title-block">
+              <span class="eyebrow">⚡ 3D RIG SIMULATOR ⚡</span>
+              <h2>Build your own PC.</h2>
+            </div>
+            <div class="studio-summary-block">
+              <div class="studio-metric">
+                <span class="studio-metric-lbl">PERF GRADE</span>
+                <b class="studio-metric-val" id="studioPerfGrade">—</b>
               </div>
+              <div class="studio-metric">
+                <span class="studio-metric-lbl">EST. TOTAL</span>
+                <b class="studio-metric-val price" id="builderLiveTotal">$0</b>
+              </div>
+              <button class="primary glow-btn studio-quick-cart-btn" id="studioTopCartBtn" type="button">
+                <span>Add Build to Bag</span> ⚡
+              </button>
             </div>
           </div>
 
@@ -444,11 +460,39 @@
                 <p class="bottleneck" id="bottleneck">Select parts to see the live read.</p>
               </div>
 
+              <!-- Category Filter Bar for Parts -->
+              <div class="builder-cat-bar" id="builderCatBar">
+                <button type="button" class="bcat-chip active" data-bcat="case">
+                  <span>🔲 Case</span>
+                </button>
+                <button type="button" class="bcat-chip" data-bcat="cpu">
+                  <span>⚡ CPU</span>
+                </button>
+                <button type="button" class="bcat-chip" data-bcat="gpu">
+                  <span>🎮 GPU</span>
+                </button>
+                <button type="button" class="bcat-chip" data-bcat="ram">
+                  <span>🧠 RAM</span>
+                </button>
+                <button type="button" class="bcat-chip" data-bcat="cooler">
+                  <span>❄️ Cooler</span>
+                </button>
+                <button type="button" class="bcat-chip" data-bcat="mobo">
+                  <span>🔌 Mobo</span>
+                </button>
+              </div>
+
               <div class="picker" id="picker"></div>
 
-              <button class="primary full glow-btn" id="addBuildToCart" type="button">
-                Add this build to cart
-              </button>
+              <div class="builder-bottom-bar">
+                <div class="builder-price-pill">
+                  <span class="pill-lbl">BUILD TOTAL</span>
+                  <strong class="pill-price" id="builderBottomTotal">$0</strong>
+                </div>
+                <button class="primary full glow-btn" id="addBuildToCart" type="button">
+                  Add this build to cart ⚡
+                </button>
+              </div>
             </aside>
           </div>
         </section>

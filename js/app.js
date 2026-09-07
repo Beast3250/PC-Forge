@@ -239,6 +239,11 @@ function fillSlots() {
     item.classList.toggle("active-slot", activeSlot === slotKey);
   });
 
+  // Sync Studio Category Filter chips
+  document.querySelectorAll("[data-bcat]").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.bcat === activeSlot);
+  });
+
   update3DRig();
 }
 
@@ -266,6 +271,16 @@ function scoreBuild() {
   $("createVal").textContent = `${create}%`;
   $("peakVal").textContent = `${peak}%`;
   $("perfGrade").textContent = grade;
+
+  // Live Studio Total Price calculation
+  const totalBuildPrice = Object.values(build).filter(Boolean).reduce((sum, p) => sum + p.price, 0);
+  const totalFormatted = money(totalBuildPrice);
+  const liveTotalEl = $("builderLiveTotal");
+  if (liveTotalEl) liveTotalEl.textContent = totalFormatted;
+  const bottomTotalEl = $("builderBottomTotal");
+  if (bottomTotalEl) bottomTotalEl.textContent = totalFormatted;
+  const studioGradeEl = $("studioPerfGrade");
+  if (studioGradeEl) studioGradeEl.textContent = grade;
 
   let note = "Select parts to see the live read.";
   if (build.cpu || build.gpu) {
@@ -363,6 +378,7 @@ function route() {
 
   if (page === "builder" && preview3DVisible) {
     setTimeout(resize3D, 80);
+    setTimeout(resize3D, 250);
   }
 }
 
@@ -480,6 +496,17 @@ function bindScrollFlow() {
   // Buttons & triggers
   const introBtn = $("introEnterBtn");
   if (introBtn) introBtn.addEventListener("click", enterSiteToHome);
+
+  const introHint = $("introHint");
+  if (introHint) {
+    introHint.addEventListener("click", enterSiteToHome);
+    introHint.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        enterSiteToHome();
+      }
+    });
+  }
 
   const returnCue = $("returnToIntro");
   if (returnCue) returnCue.addEventListener("click", returnToIntro);
@@ -1480,6 +1507,31 @@ document.addEventListener("click", (e) => {
       catGroup.classList.add("highlight");
       setTimeout(() => catGroup.classList.remove("highlight"), 1400);
     }
+  }
+
+  // Builder Category Chip Tab Click
+  const bcatBtn = e.target.closest("[data-bcat]");
+  if (bcatBtn) {
+    activeSlot = bcatBtn.dataset.bcat;
+    fillSlots();
+    const catGroup = document.querySelector(`.pick-group[data-cat="${activeSlot}"]`);
+    if (catGroup) {
+      catGroup.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      catGroup.classList.add("highlight");
+      setTimeout(() => catGroup.classList.remove("highlight"), 1400);
+    }
+  }
+
+  // Quick Cart Button in Studio Header
+  const studioCartBtn = e.target.closest("#studioTopCartBtn");
+  if (studioCartBtn) {
+    const parts = Object.values(build).filter(Boolean);
+    if (!parts.length) {
+      toast("Seat at least one component into the build");
+      return;
+    }
+    parts.forEach((p) => addToCart(p.id));
+    toast("Seated build moved to cart");
   }
 
   // Cart Qty +/-

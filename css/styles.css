@@ -61,19 +61,23 @@ textarea {
 }
 
 /* ==========================================================================
-   Screen 1: HI GAMERS Intro Screen
+   Screen 1: HI GAMERS Intro Screen (Fully Responsive Single Frame)
    ========================================================================== */
 .intro {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   z-index: 90;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: radial-gradient(ellipse at 50% 40%, #17171d 0%, #050506 65%);
   transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.7s ease;
   will-change: transform, opacity;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .intro.leave {
@@ -85,92 +89,165 @@ textarea {
 .intro-glow {
   pointer-events: none;
   position: absolute;
-  width: 50vw;
-  height: 50vw;
+  width: min(75vw, 75vh);
+  height: min(75vw, 75vh);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.12), rgba(255, 0, 119, 0.06) 45%, transparent 70%);
-  filter: blur(24px);
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.15), rgba(255, 0, 119, 0.08) 45%, transparent 70%);
+  filter: blur(40px);
   animation: pulse 5s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Unified Single-Frame Container — Everything in one screen */
+.intro-frame {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 960px;
+  height: 100%;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(14px, 3vh, 32px) clamp(16px, 4vw, 32px);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Top Area: Kicker */
+.intro-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: clamp(4px, 1.5vh, 16px);
+  flex-shrink: 0;
 }
 
 .intro-kicker {
-  letter-spacing: 0.38em;
+  letter-spacing: clamp(0.18em, 0.8vw, 0.32em);
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: clamp(10.5px, 2.2vw, 12px);
   color: var(--cyan);
-  margin-bottom: 24px;
-  font-weight: 600;
+  font-weight: 700;
   text-shadow: 0 0 16px var(--cyan-glow);
+  padding: 6px 16px;
+  background: rgba(0, 240, 255, 0.06);
+  border: 1px solid rgba(0, 240, 255, 0.22);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+
+/* Center Area: Title & Enter Button */
+.intro-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 3.5vh, 32px);
+  width: 100%;
+  margin: auto 0;
+  flex-shrink: 1;
 }
 
 .intro-title {
   font-family: var(--font-d);
   font-weight: 800;
-  font-size: clamp(4.5rem, 17vw, 13rem);
-  line-height: 0.82;
-  letter-spacing: -0.06em;
+  /* Fluid scaling tied to both viewport width AND viewport height so it fits in one frame on any screen */
+  font-size: clamp(2.8rem, min(15vw, 12vh), 10.5rem);
+  line-height: 0.86;
+  letter-spacing: -0.04em;
   text-align: center;
   text-shadow: 0 0 36px rgba(255, 255, 255, 0.28), 0 0 80px rgba(0, 240, 255, 0.18);
   animation: rise 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   user-select: none;
+  margin: 0;
 }
 
 .intro-title span {
   display: block;
+  white-space: nowrap;
   background: linear-gradient(180deg, #ffffff 10%, #bfbfc8 90%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .intro-enter-btn {
-  margin-top: 38px;
+  margin-top: 0;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: var(--text);
-  padding: 12px 28px;
+  padding: clamp(12px, 2vh, 16px) clamp(24px, 5vw, 36px);
   border-radius: 999px;
-  font-size: 13px;
-  letter-spacing: 0.18em;
+  font-size: clamp(12.5px, 2.5vw, 14px);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 240, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 240, 255, 0.18);
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
 }
 
-.intro-enter-btn:hover {
+.intro-enter-btn:hover,
+.intro-enter-btn:active {
   background: #fff;
   color: #050506;
   border-color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 0 35px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 40px rgba(255, 255, 255, 0.45), 0 0 50px rgba(0, 240, 255, 0.4);
 }
 
 .intro-enter-btn .scroll-arrow {
   display: inline-block;
+  font-size: 1.1em;
   animation: bounceDown 1.5s ease-in-out infinite;
 }
 
-.intro-hint {
-  position: absolute;
-  bottom: 6vh;
+/* Bottom Area: Scroll hint cleanly placed below, never overlapping */
+.intro-bottom {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: clamp(6px, 1.5vh, 16px);
+  flex-shrink: 0;
+}
+
+.intro-hint {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   color: var(--muted);
-  letter-spacing: 0.28em;
+  letter-spacing: clamp(0.18em, 0.8vw, 0.28em);
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: clamp(10px, 2.2vw, 11px);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.25s ease, transform 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.intro-hint:hover {
+  color: var(--cyan);
+  transform: translateY(-2px);
 }
 
 .scroll-line {
-  width: 1px;
-  height: 42px;
+  width: 1.5px;
+  height: clamp(20px, 4.5vh, 36px);
   background: linear-gradient(var(--cyan), transparent);
   animation: drip 1.6s ease-in-out infinite;
 }
@@ -2798,8 +2875,15 @@ body {
   }
 }
 
-/* ─── Large Mobile / Phablet (max-width: 768px) ─── */
+/* ─── Large Mobile / Phablet & Tablet (max-width: 768px) ─── */
 @media (max-width: 768px) {
+  /* Prevent iOS Safari input auto-zoom */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
   /* Show hamburger, hide desktop nav */
   .nav-links {
     display: none;
@@ -2814,52 +2898,88 @@ body {
   }
 
   .nav {
-    padding: 14px 5vw;
+    padding: 14px 18px;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+  }
+
+  .cart-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  .cart-btn b {
+    min-width: 22px;
+    height: 22px;
+    font-size: 11px;
   }
 
   /* Page padding */
   .page {
-    padding: 16px 5vw 70px;
+    padding: 16px 16px 80px;
   }
 
-  /* Intro screen adjustments */
+  /* Intro screen — single-frame responsive alignment */
+  .intro-frame {
+    padding: max(16px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom)) 16px;
+  }
+
   .intro-title {
-    font-size: clamp(3.5rem, 14vw, 8rem);
+    font-size: clamp(2.8rem, min(15vw, 11vh), 6rem);
+    line-height: 0.86;
+  }
+
+  .intro-center {
+    gap: clamp(14px, 3vh, 26px);
   }
 
   .intro-kicker {
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    margin-bottom: 18px;
+    font-size: 11px;
   }
 
   .intro-enter-btn {
-    padding: 10px 22px;
-    font-size: 12px;
+    padding: 12px 26px;
+    font-size: 13px;
+  }
+
+  .intro-hint {
+    font-size: 11px;
   }
 
   /* Home hero */
   .home-hero {
-    min-height: 55vh;
-    padding: 40px 16px 36px;
+    min-height: 62vh;
+    padding: 44px 16px 36px;
   }
 
   .hero-glitch-title {
-    font-size: clamp(2.2rem, 7vw, 3.5rem);
+    font-size: clamp(2.2rem, 8vw, 3.4rem);
+    line-height: 1.05;
   }
 
   .hero-lede {
-    font-size: 1rem;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: #b0b0be;
   }
 
-  /* Hide some floating items on mobile for cleaner look */
+  .eyebrow {
+    font-size: 11.5px;
+    letter-spacing: 0.24em;
+  }
+
+  /* Preserve subtle animated background depth */
   .float-ram,
   .float-cooler {
     display: none;
   }
 
   .floating-item {
-    transform: scale(0.7);
+    transform: scale(0.75);
+    opacity: 0.7;
   }
 
   /* Hero actions */
@@ -2867,82 +2987,158 @@ body {
     flex-direction: column;
     gap: 12px;
     margin-top: 28px;
+    width: 100%;
   }
 
   .hero-actions .primary,
-  .glow-btn {
-    padding: 12px 24px;
-    font-size: 13px;
-    width: 100%;
-    justify-content: center;
-  }
-
+  .glow-btn,
   .hero-actions .secondary {
-    padding: 12px 22px;
-    font-size: 13px;
+    padding: 14px 24px;
+    font-size: 14px;
     width: 100%;
     justify-content: center;
+    border-radius: 999px;
   }
 
-  /* Hero stats — stack vertically */
+  /* Hero stats — clear, spacious stack */
   .hero-stats {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     border-radius: 18px;
     padding: 16px 20px;
     width: 100%;
+    margin-top: 32px;
+    background: rgba(16, 16, 22, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .stat-pill {
+    width: 100%;
+    gap: 4px;
+  }
+
+  .stat-pill strong {
+    font-size: 14.5px;
+    color: #fff;
+  }
+
+  .stat-pill span {
+    font-size: 12px;
+    color: var(--cyan);
   }
 
   .stat-div {
-    width: 80%;
+    width: 90%;
     height: 1px;
+    background: rgba(255, 255, 255, 0.08);
   }
 
   /* Brand marquee */
   .brand-marquee-wrap {
-    margin: 28px -5vw 36px;
-    padding: 10px 0;
+    margin: 32px -16px 36px;
+    padding: 14px 0;
+  }
+
+  .brand-pill {
+    padding: 8px 16px;
+    gap: 10px;
+  }
+
+  .brand-logo-txt {
+    font-size: 13px;
+  }
+
+  .brand-tier-badge {
+    font-size: 11px;
+    padding: 3px 8px;
   }
 
   /* Featured builds */
   .featured-builds-section {
-    margin: 36px 0 50px;
+    margin: 32px 0 46px;
+  }
+
+  .section-head {
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+  }
+
+  .section-head h2 {
+    font-size: clamp(1.7rem, 6vw, 2.4rem);
+  }
+
+  .section-desc {
+    font-size: 14px;
+    line-height: 1.6;
   }
 
   .builds-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 22px;
+  }
+
+  .build-card-image-wrap {
+    height: 220px;
   }
 
   .build-card-body {
-    padding: 18px;
+    padding: 20px;
+    gap: 12px;
+  }
+
+  .build-card-body h3 {
+    font-size: 1.35rem;
+  }
+
+  .build-specs-list {
+    gap: 8px;
+    margin: 6px 0;
+  }
+
+  .spec-tag {
+    font-size: 11.5px;
+    padding: 5px 11px;
   }
 
   /* Buy portal */
   .buy-portal-section {
-    padding: 44px 18px;
-    margin: 50px 0 24px;
+    padding: 44px 20px;
+    margin: 46px 0 24px;
     border-radius: 20px;
   }
 
+  .buy-portal-inner h2 {
+    font-size: clamp(1.65rem, 6vw, 2.4rem);
+    line-height: 1.15;
+  }
+
+  .buy-portal-inner p {
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin-bottom: 26px;
+  }
+
   .buy-portal-btn {
-    padding: 16px 28px;
+    width: 100%;
+    padding: 16px 24px;
+    justify-content: center;
   }
 
   .portal-btn-content {
     font-size: 15px;
     gap: 10px;
+    justify-content: center;
   }
 
-  /* Store filters — horizontal scrollable */
+  /* Store filters — horizontal scrollable with comfortable touch spacing */
   .filters {
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    gap: 8px;
-    margin: 28px 0 20px;
-    padding-bottom: 4px;
+    gap: 10px;
+    margin: 24px -16px 24px;
+    padding: 4px 16px 10px;
   }
 
   .filters::-webkit-scrollbar {
@@ -2952,61 +3148,145 @@ body {
   .chip {
     white-space: nowrap;
     flex-shrink: 0;
+    padding: 10px 18px;
+    font-size: 13.5px;
   }
 
-  /* Product grid */
+  /* Product grid — bold, spacious single-column presentation */
   .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .card {
-    padding: 12px;
+    padding: 18px;
+    gap: 14px;
+    border-radius: 20px;
   }
 
   .card-image-box {
-    height: 150px;
-    padding: 10px;
+    height: 210px;
+    padding: 16px;
+  }
+
+  .card-image-box img {
+    max-width: 92%;
+    max-height: 92%;
+  }
+
+  .card-tag-badge {
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+
+  .card small {
+    font-size: 11px;
   }
 
   .card h3 {
-    font-size: 1.08rem;
+    font-size: 1.25rem;
   }
 
   .card .meta {
-    font-size: 12px;
+    font-size: 13.5px;
+    align-items: center;
   }
 
   .card .meta b {
-    font-size: 1.05rem;
+    font-size: 1.3rem;
   }
 
-  /* Builder 3D viewport */
+  .card-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .card-actions .btn-build-seat,
+  .card-actions .add {
+    font-size: 13.5px;
+    padding: 12px 14px;
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Builder Layout */
+  .builder {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .preview-bar {
+    padding: 12px 16px;
+    border-radius: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .preview-mode-info {
+    font-size: 12.5px;
+  }
+
+  #previewStatusText {
+    display: inline;
+  }
+
+  .preview-toggle-btn {
+    font-size: 12px;
+    padding: 7px 14px;
+  }
+
+  /* Builder 3D viewport — generous height so 3D model is expansive */
   .chassis-3d-wrap.large-viewport {
-    border-radius: 16px;
+    border-radius: 18px;
+    overflow: hidden;
   }
 
   .canvas-holder.large-holder {
-    height: 380px;
+    height: clamp(380px, 50vh, 460px);
   }
 
   .viewport-toolbar {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: 8px;
-    align-items: flex-start;
-    top: 10px;
-    left: 10px;
-    right: 10px;
+    padding: 10px;
+    background: rgba(14, 14, 18, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 20;
+    pointer-events: auto;
   }
 
   .camera-angles {
-    flex-wrap: wrap;
-    gap: 3px;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 4px;
+    padding: 4px 6px;
+    background: rgba(10, 10, 14, 0.92);
+    border-radius: 10px;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .camera-angles::-webkit-scrollbar {
+    display: none;
   }
 
   .cam-btn {
-    font-size: 10px;
-    padding: 4px 6px;
+    font-size: 11.5px;
+    padding: 6px 11px;
+    min-height: 32px;
+    white-space: nowrap;
+    border-radius: 6px;
   }
 
   .case-quick-select {
@@ -3014,128 +3294,301 @@ body {
   }
 
   .dual-argb-controls {
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    background: rgba(10, 10, 14, 0.92);
+  }
+
+  .argb-control-group {
+    display: flex;
+    align-items: center;
     gap: 6px;
-    padding: 5px 8px;
-    border-radius: 8px;
-    font-size: 10px;
   }
 
   .argb-group-label {
-    font-size: 9px;
+    font-size: 10.5px;
+  }
+
+  .argb-swatches {
+    display: flex;
+    gap: 6px;
   }
 
   .rgb-swatch {
-    width: 12px;
-    height: 12px;
-  }
-
-  .chassis-3d-hud {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-  }
-
-  .hud-item {
-    padding: 6px 10px;
-  }
-
-  .hud-label {
-    font-size: 9px;
-  }
-
-  .hud-val {
-    font-size: 11px;
+    width: 18px;
+    height: 18px;
   }
 
   /* Case pills bar */
   .case-pills-bar {
-    gap: 6px;
+    padding: 8px 12px;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .case-pills-title {
+    font-size: 11px;
+  }
+
+  .case-pill {
     padding: 6px 12px;
+    font-size: 12px;
+    min-height: 34px;
   }
 
   .case-pill-txt {
-    font-size: 10px;
+    font-size: 11.5px;
+    max-width: none;
   }
 
-  /* Preview bar */
-  .preview-bar {
-    padding: 10px 14px;
-    flex-wrap: wrap;
+  /* 3D HUD: placed cleanly beneath 3D canvas so 3D model is 100% visible */
+  .chassis-3d-hud {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+    padding: 12px;
+    background: rgba(12, 12, 16, 0.96);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    pointer-events: auto;
+    border-radius: 0 0 18px 18px;
+    z-index: 10;
   }
 
-  .preview-mode-info {
+  .hud-item {
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .hud-label {
+    font-size: 10.5px;
+  }
+
+  .hud-val {
     font-size: 12px;
-  }
-
-  .preview-toggle-btn {
-    font-size: 11px;
-    padding: 6px 12px;
+    margin-top: 3px;
   }
 
   /* Builder panel */
+  .builder-panel {
+    gap: 20px;
+  }
+
   .perf,
   .picker {
-    padding: 16px;
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .perf-head h3 {
+    font-size: 1.15rem;
   }
 
   .perf-head span {
-    font-size: 1.6rem;
+    font-size: 2rem;
+  }
+
+  .meter-label {
+    font-size: 13.5px;
+  }
+
+  .bar {
+    height: 8px;
+  }
+
+  .bottleneck {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .pick-group h4 {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  /* Component Option Cards in Picker */
+  .opt {
+    padding: 12px 14px;
+    gap: 12px;
+    border-radius: 14px;
+    margin-bottom: 9px;
+    min-height: 60px;
+  }
+
+  .opt-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+  }
+
+  .opt-name {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .opt-spec {
+    font-size: 12px;
+  }
+
+  .opt-price {
+    font-size: 14px;
+  }
+
+  .opt-check {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  .primary.full {
+    padding: 16px;
+    font-size: 15px;
+    min-height: 52px;
   }
 
   /* About section */
   .about-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-    margin: 28px 0 40px;
+    gap: 18px;
+    margin: 28px 0 44px;
   }
 
   .about-card {
-    padding: 22px;
+    padding: 24px;
+    border-radius: 18px;
+    gap: 12px;
+  }
+
+  .about-card h3 {
+    font-size: 1.35rem;
+  }
+
+  .about-card p {
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+
+  .about-icon {
+    font-size: 2.2rem;
   }
 
   /* Contact section */
   .contact-section {
-    padding: 24px 16px;
-    border-radius: 18px;
+    padding: 28px 18px;
+    border-radius: 20px;
+    gap: 26px;
   }
 
   .contact-head h2 {
-    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    font-size: clamp(1.75rem, 6vw, 2.4rem);
+  }
+
+  .contact-sub {
+    font-size: 14.5px;
   }
 
   .contact-cards-row {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 16px;
+  }
+
+  .contact-card {
+    padding: 22px;
+    border-radius: 16px;
+  }
+
+  .contact-card h4 {
+    font-size: 12px;
+  }
+
+  .contact-link {
+    font-size: 1.18rem;
+  }
+
+  .copy-btn {
+    padding: 8px 18px;
+    font-size: 12px;
+    min-height: 36px;
   }
 
   .contact-form {
     padding: 20px;
+    border-radius: 18px;
+    gap: 16px;
+  }
+
+  .contact-form h3 {
+    font-size: 1.25rem;
+  }
+
+  .contact-form label {
+    font-size: 13.5px;
+    gap: 8px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    padding: 12px 14px;
+    font-size: 16px;
+    border-radius: 10px;
   }
 
   /* Checkout */
   .checkout {
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 22px;
     margin-top: 24px;
   }
 
   .bag,
   .pay {
-    padding: 16px;
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .pay label {
+    font-size: 13px;
+  }
+
+  .pay input {
+    padding: 12px 14px;
+    font-size: 16px;
+  }
+
+  .pay button {
+    padding: 15px;
+    font-size: 14.5px;
+    min-height: 50px;
   }
 
   /* Drawer — full width on mobile */
   .drawer-panel {
     width: 100%;
+    padding: 22px 18px;
+  }
+
+  .cart-item-thumb {
+    width: 52px;
+    height: 52px;
   }
 
   /* Motto */
+  .forge-motto-wrap {
+    margin-top: 24px;
+    gap: 14px;
+  }
+
   .forge-motto-text {
-    font-size: clamp(1rem, 4vw, 1.5rem);
+    font-size: clamp(1rem, 4.5vw, 1.4rem);
     letter-spacing: 0.08em;
   }
 
@@ -3143,13 +3596,52 @@ body {
     width: 100px;
   }
 
+  /* Classic 2D chassis */
+  .case-glass {
+    min-height: 440px;
+  }
+
+  .mobo-plate {
+    margin: 18px 18px 18px 74px;
+    gap: 10px;
+  }
+
+  .fan {
+    width: 54px;
+    height: 54px;
+    left: 10px;
+  }
+
+  .slot {
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .slot strong {
+    font-size: 12px;
+  }
+
+  .slot-name {
+    font-size: 13px;
+  }
+
+  .gpu-slot {
+    min-height: 76px;
+  }
+
+  /* Return cue */
+  .return-cue {
+    padding: 12px 16px;
+    font-size: 11px;
+  }
+
   /* Toast */
   .toast {
     left: 16px;
     right: 16px;
-    transform: translateY(20px);
+    font-size: 13.5px;
+    padding: 10px 18px;
     text-align: center;
-    font-size: 13px;
   }
 
   .toast.show {
@@ -3157,529 +3649,193 @@ body {
   }
 }
 
-/* ─── Small Mobile (max-width: 480px) ─── */
+/* ─── Standard Mobile (max-width: 480px) — iPhone XR (414px), Pixel (393px-412px) ─── */
 @media (max-width: 480px) {
   .nav {
-    padding: 12px 4vw;
+    padding: 12px 14px;
   }
 
   .logo {
-    font-size: 1.1rem;
-  }
-
-  .cart-btn {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
-
-  .cart-btn b {
-    min-width: 20px;
-    height: 20px;
-    font-size: 10px;
-  }
-
-  .page {
-    padding: 12px 4vw 60px;
-  }
-
-  /* Intro */
-  .intro-title {
-    font-size: clamp(2.8rem, 16vw, 5rem);
-  }
-
-  .intro-kicker {
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    margin-bottom: 14px;
-  }
-
-  .intro-enter-btn {
-    padding: 9px 18px;
-    font-size: 11px;
-    gap: 8px;
-    margin-top: 28px;
-  }
-
-  .intro-hint {
-    bottom: 4vh;
-    font-size: 9px;
-  }
-
-  /* Home hero */
-  .home-hero {
-    min-height: 50vh;
-    padding: 28px 12px 24px;
-  }
-
-  .hero-glitch-title {
-    font-size: clamp(1.8rem, 8vw, 2.6rem);
-    margin: 10px 0 14px;
-  }
-
-  .hero-lede {
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-
-  .eyebrow {
-    font-size: 10px;
-    letter-spacing: 0.22em;
-  }
-
-  /* Float items — all hidden on small mobile */
-  .floating-item {
-    display: none;
-  }
-
-  /* Hero actions */
-  .hero-actions {
-    margin-top: 22px;
-  }
-
-  .hero-actions .primary,
-  .glow-btn {
-    padding: 11px 20px;
-    font-size: 12.5px;
-  }
-
-  .hero-actions .secondary {
-    padding: 11px 18px;
-    font-size: 12.5px;
-  }
-
-  /* Hero stats */
-  .hero-stats {
-    gap: 8px;
-    padding: 14px 16px;
-    border-radius: 14px;
-  }
-
-  .stat-pill strong {
-    font-size: 11.5px;
-  }
-
-  .stat-pill span {
-    font-size: 9.5px;
-  }
-
-  /* Brand marquee */
-  .brand-marquee-wrap {
-    margin: 20px -4vw 24px;
-  }
-
-  .brand-pill {
-    padding: 6px 12px;
-    gap: 8px;
-  }
-
-  .brand-logo-txt {
-    font-size: 11px;
-  }
-
-  .brand-tier-badge {
-    font-size: 9px;
-  }
-
-  /* Featured builds */
-  .featured-builds-section {
-    margin: 24px 0 36px;
-  }
-
-  .section-head {
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-  }
-
-  .section-head h2 {
-    font-size: clamp(1.4rem, 5vw, 2.2rem);
-  }
-
-  .section-desc {
-    font-size: 13px;
-  }
-
-  .builds-grid {
-    gap: 16px;
-  }
-
-  .build-card-image-wrap {
-    height: 180px;
-  }
-
-  .build-card-body {
-    padding: 16px;
-    gap: 10px;
-  }
-
-  .build-card-body h3 {
     font-size: 1.2rem;
   }
 
-  .build-specs-list {
-    gap: 6px;
+  .page {
+    padding: 14px 14px 70px;
   }
 
-  .spec-tag {
-    font-size: 10px;
-    padding: 3px 8px;
+  .home-hero {
+    min-height: 60vh;
+    padding: 38px 12px 32px;
   }
 
-  /* Buy portal */
-  .buy-portal-section {
-    padding: 36px 14px;
-    margin: 36px 0 20px;
-    border-radius: 16px;
+  .hero-glitch-title {
+    font-size: clamp(2.1rem, 8.5vw, 2.9rem);
   }
 
-  .buy-portal-inner h2 {
-    font-size: clamp(1.5rem, 5.5vw, 2.4rem);
+  .hero-lede {
+    font-size: 0.98rem;
   }
 
-  .buy-portal-inner p {
-    font-size: 13.5px;
-    margin-bottom: 24px;
+  .brand-marquee-wrap {
+    margin: 28px -14px 32px;
   }
 
-  .buy-portal-btn {
-    padding: 14px 22px;
+  .filters {
+    margin: 20px -14px 20px;
+    padding: 4px 14px 8px;
   }
 
-  .portal-btn-content {
-    font-size: 13.5px;
-    gap: 8px;
-  }
-
-  /* Store page */
-  .hero h2 {
-    font-size: clamp(1.8rem, 6vw, 3rem);
-  }
-
-  .lede {
-    font-size: 0.95rem;
-  }
-
-  /* Product grid — single column on small mobile */
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .card {
-    padding: 12px;
-    gap: 10px;
-  }
-
-  .card-image-box {
-    height: 160px;
-  }
-
-  .card h3 {
-    font-size: 1.05rem;
-  }
-
-  /* Card actions — stack on very small screens */
   .card-actions {
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
 
   .card-actions .btn-build-seat,
   .card-actions .add {
-    font-size: 12px;
-    padding: 10px;
+    width: 100%;
   }
 
-  /* Builder 3D viewport */
   .canvas-holder.large-holder {
-    height: 300px;
+    height: clamp(370px, 48vh, 440px);
   }
 
   .chassis-3d-hud {
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 10px 8px;
   }
 
   .hud-item {
-    padding: 5px 8px;
-    border-radius: 8px;
+    padding: 7px 8px;
   }
 
   .hud-label {
-    font-size: 8px;
+    font-size: 10px;
   }
 
   .hud-val {
-    font-size: 10px;
-  }
-
-  .camera-angles {
-    gap: 2px;
-    padding: 3px;
-  }
-
-  .cam-btn {
-    font-size: 9px;
-    padding: 3px 5px;
-  }
-
-  .dual-argb-controls {
-    gap: 4px;
-    padding: 4px 6px;
-  }
-
-  .case-pills-bar {
-    padding: 5px 10px;
-    gap: 5px;
-  }
-
-  .case-pill {
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-
-  .case-pill-txt {
-    font-size: 9px;
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .preview-bar {
-    padding: 8px 12px;
-    border-radius: 10px;
-  }
-
-  .preview-mode-info {
-    font-size: 11px;
-  }
-
-  #previewStatusText {
-    display: none;
-  }
-
-  .preview-toggle-btn {
-    font-size: 10px;
-    padding: 5px 10px;
-  }
-
-  /* Builder panel */
-  .perf,
-  .picker {
-    padding: 14px;
-    border-radius: 14px;
-  }
-
-  .perf-head h3 {
-    font-size: 0.95rem;
-  }
-
-  .perf-head span {
-    font-size: 1.4rem;
-  }
-
-  .meter-label {
-    font-size: 12px;
-  }
-
-  .bottleneck {
-    font-size: 12px;
-  }
-
-  .opt {
-    padding: 8px 10px;
-    gap: 8px;
-    font-size: 12px;
-  }
-
-  .opt-thumb {
-    width: 38px;
-    height: 38px;
-  }
-
-  .opt-name {
     font-size: 11.5px;
   }
 
-  .opt-spec {
-    font-size: 10px;
-  }
-
-  .opt-price {
-    font-size: 12px;
-  }
-
-  .primary.full {
-    padding: 12px;
-    font-size: 13px;
-  }
-
-  /* About */
-  .about-card {
-    padding: 18px;
-    border-radius: 16px;
-  }
-
-  .about-card h3 {
-    font-size: 1.15rem;
-  }
-
-  .about-card p {
-    font-size: 13px;
-  }
-
-  .about-icon {
-    font-size: 1.6rem;
-  }
-
-  /* Contact */
-  .contact-section {
-    padding: 20px 14px;
-    border-radius: 14px;
-    gap: 24px;
-  }
-
-  .contact-card {
-    padding: 18px;
-    border-radius: 14px;
-  }
-
-  .contact-link {
-    font-size: 1.05rem;
-  }
-
-  .contact-form {
-    padding: 16px;
-    border-radius: 14px;
-    gap: 14px;
-  }
-
-  .contact-form h3 {
-    font-size: 1.1rem;
-  }
-
-  .contact-form input,
-  .contact-form textarea {
-    padding: 10px 12px;
-    font-size: 13px;
-    border-radius: 8px;
-  }
-
-  /* Checkout */
-  .bag,
-  .pay {
-    padding: 14px;
-    border-radius: 14px;
-  }
-
-  .pay input {
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-
-  .pay label {
-    font-size: 11px;
-  }
-
-  /* Motto */
-  .forge-motto-text {
-    font-size: clamp(0.85rem, 4.5vw, 1.3rem);
-    letter-spacing: 0.06em;
-  }
-
-  .motto-divider {
-    width: 70px;
-  }
-
-  /* Classic 2D chassis */
-  .case-glass {
-    min-height: 400px;
-  }
-
-  .mobo-plate {
-    margin: 18px 18px 18px 80px;
+  .opt {
+    padding: 11px 12px;
     gap: 10px;
   }
 
-  .fan {
-    width: 56px;
-    height: 56px;
-    left: 12px;
+  .opt-thumb {
+    width: 48px;
+    height: 48px;
   }
 
-  .slot {
-    padding: 10px 12px;
-    border-radius: 10px;
+  .opt-name {
+    font-size: 13.5px;
   }
 
-  .slot strong {
-    font-size: 11px;
+  .opt-spec {
+    font-size: 11.5px;
   }
 
-  .slot-name {
-    font-size: 12px;
-  }
-
-  .gpu-slot {
-    min-height: 68px;
-  }
-
-  /* Return cue */
-  .return-cue {
-    padding: 10px 14px;
-    font-size: 10px;
-  }
-
-  /* Toast */
-  .toast {
-    font-size: 12px;
-    padding: 8px 16px;
-  }
-}
-
-/* ─── Very Small Mobile (max-width: 360px) ─── */
-@media (max-width: 360px) {
-  .intro-title {
-    font-size: clamp(2.4rem, 18vw, 4rem);
-  }
-
-  .hero-glitch-title {
-    font-size: clamp(1.5rem, 8.5vw, 2.2rem);
-  }
-
-  .hero-actions .primary,
-  .glow-btn,
-  .hero-actions .secondary {
-    padding: 10px 16px;
-    font-size: 12px;
-  }
-
-  .canvas-holder.large-holder {
-    height: 260px;
-  }
-
-  .chassis-3d-hud {
-    grid-template-columns: 1fr;
-    gap: 3px;
-  }
-
-  .camera-angles {
-    flex-wrap: wrap;
-  }
-
-  .cam-btn {
-    font-size: 8px;
-    padding: 2px 4px;
+  .opt-price {
+    font-size: 13.5px;
   }
 
   .mobile-nav-panel {
     width: 100vw;
   }
+}
 
-  .case-pills-bar {
-    display: none;
+/* ─── Compact Mobile (max-width: 360px) ─── */
+@media (max-width: 360px) {
+  .intro-title {
+    font-size: clamp(2.4rem, min(14vw, 10vh), 3.5rem);
+  }
+
+  .intro-kicker {
+    font-size: 10px;
+    padding: 5px 12px;
+  }
+
+  .intro-enter-btn {
+    padding: 11px 22px;
+    font-size: 12px;
+  }
+
+  .hero-glitch-title {
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
+  }
+
+  .canvas-holder.large-holder {
+    height: 350px;
+  }
+
+  .chassis-3d-hud {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .camera-angles {
+    gap: 2px;
+  }
+
+  .cam-btn {
+    font-size: 10.5px;
+    padding: 5px 8px;
+  }
+
+  .case-pill {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .case-pill-txt {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
+
+/* ─── Short Viewports / Mobile Landscape (Single Frame Guarantee) ─── */
+@media (max-height: 540px) {
+  .intro-frame {
+    padding: 10px 16px;
+  }
+
+  .intro-top {
+    padding-top: 2px;
+  }
+
+  .intro-kicker {
+    font-size: 10px;
+    padding: 4px 12px;
+  }
+
+  .intro-title {
+    font-size: clamp(2rem, 10vh, 3.8rem);
+    line-height: 0.82;
+  }
+
+  .intro-center {
+    gap: 10px;
+  }
+
+  .intro-enter-btn {
+    padding: 8px 20px;
+    font-size: 11.5px;
+  }
+
+  .intro-bottom {
+    padding-bottom: 4px;
+  }
+
+  .intro-hint {
+    font-size: 9.5px;
+    gap: 4px;
+  }
+
+  .scroll-line {
+    height: 16px;
+  }
+}
+
+
 
