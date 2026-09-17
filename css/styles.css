@@ -61,8 +61,26 @@ textarea {
 }
 
 /* ==========================================================================
-   Screen 1: HI GAMERS Intro Screen (Fully Responsive Single Frame)
+   Screen 1: HI GAMERS Intro Screen (Black Circular Motion)
    ========================================================================== */
+.intro-iris-ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2.5px solid rgba(0, 240, 255, 0.9);
+  box-shadow:
+    0 0 25px rgba(0, 240, 255, 0.6),
+    0 0 60px rgba(255, 0, 119, 0.45),
+    inset 0 0 25px rgba(0, 240, 255, 0.4);
+  pointer-events: none;
+  z-index: 95;
+  opacity: 0;
+  will-change: width, height, opacity;
+  transition: opacity 0.15s ease;
+}
+
 .intro {
   position: fixed;
   inset: 0;
@@ -73,16 +91,17 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 50% 40%, #17171d 0%, #050506 65%);
-  transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.7s ease;
-  will-change: transform, opacity;
+  background: #000000;
   overflow: hidden;
   box-sizing: border-box;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0%, #000000 1.5px);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0%, #000000 1.5px);
+  will-change: mask-image, -webkit-mask-image, opacity;
 }
 
 .intro.leave {
-  transform: translateY(-100%);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
@@ -257,10 +276,9 @@ textarea {
    ========================================================================== */
 .app {
   min-height: 100vh;
-  opacity: 0;
-  transform: translateY(30px);
-  pointer-events: none;
-  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
 }
 
 .app.in {

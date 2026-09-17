@@ -401,6 +401,11 @@ function route() {
   if (page === "peripherals" && typeof initPeripheralsPage === "function") {
     setTimeout(initPeripheralsPage, 50);
   }
+
+  // Dismiss intro immediately if navigating to non-home pages
+  if (page !== "home" && typeof enterSiteToHome === "function") {
+    enterSiteToHome(true);
+  }
 }
 
 function openCart() {
@@ -445,47 +450,139 @@ function toggleMobileNav() {
 }
 
 // ==========================================================================
-// Scroll Transition: "HI GAMERS" <---> Homepage
+// Scroll Transition: "HI GAMERS" <---> Homepage (Black Circular Motion)
 // ==========================================================================
-function enterSiteToHome() {
-  if (entered) return;
-  entered = true;
-  $("intro").classList.add("leave");
-  $("app").classList.add("in");
-  document.body.style.overflow = "";
+let introTargetProgress = 0;   // 0 = closed (black HI GAMERS screen), 1 = fully open (homepage)
+let introCurrentProgress = 0;
+let introIsAnimating = false;
+
+function updateIntroIrisView(progress) {
+  const introEl = $("intro");
+  const ringEl = $("introIrisRing");
+  if (!introEl || !ringEl) return;
+
+  const radiusPercent = progress * 140; // 0% to 140%
+  const maxRadiusPx = Math.hypot(window.innerWidth, window.innerHeight) * 0.72;
+  const radiusPx = progress * maxRadiusPx;
+
+  // Circular Cutout Mask on Black Screen
+  const maskVal = `radial-gradient(circle at 50% 50%, transparent ${radiusPercent}%, #000000 calc(${radiusPercent}% + 1.5px))`;
+  introEl.style.webkitMaskImage = maskVal;
+  introEl.style.maskImage = maskVal;
+
+  // Glowing Circular Ring Loop
+  ringEl.style.width = `${radiusPx * 2}px`;
+  ringEl.style.height = `${radiusPx * 2}px`;
+  ringEl.style.opacity = progress > 0.015 && progress < 0.985 ? "1" : "0";
+
+  // HI GAMERS Frame Fade & Scale
+  const frame = introEl.querySelector(".intro-frame");
+  if (frame) {
+    const frameOpacity = Math.max(0, 1 - progress * 2.5);
+    const frameScale = 1 + progress * 0.35;
+    frame.style.opacity = frameOpacity;
+    frame.style.transform = `scale(${frameScale})`;
+    frame.style.pointerEvents = frameOpacity > 0.1 ? "auto" : "none";
+  }
+
+  // Pointer-events and visibility
+  if (progress >= 0.98) {
+    introEl.style.pointerEvents = "none";
+    introEl.style.opacity = "0";
+    introEl.style.visibility = "hidden";
+    introEl.classList.add("leave");
+    entered = true;
+    document.body.style.overflow = "";
+  } else {
+    introEl.style.visibility = "visible";
+    introEl.style.opacity = "1";
+    introEl.style.pointerEvents = "auto";
+    introEl.classList.remove("leave");
+    entered = false;
+  }
+}
+
+function startIntroIrisAnimation() {
+  if (introIsAnimating) return;
+  introIsAnimating = true;
+
+  function step() {
+    const diff = introTargetProgress - introCurrentProgress;
+    if (Math.abs(diff) > 0.001) {
+      introCurrentProgress += diff * 0.16;
+      updateIntroIrisView(introCurrentProgress);
+      requestAnimationFrame(step);
+    } else {
+      introCurrentProgress = introTargetProgress;
+      updateIntroIrisView(introCurrentProgress);
+      introIsAnimating = false;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+function enterSiteToHome(immediate = false) {
+  introTargetProgress = 1;
+  if (immediate) {
+    introCurrentProgress = 1;
+    updateIntroIrisView(1);
+    entered = true;
+    document.body.style.overflow = "";
+  } else {
+    startIntroIrisAnimation();
+  }
 }
 
 function returnToIntro() {
-  if (!entered) return;
-  entered = false;
-  $("intro").classList.remove("leave");
-  $("app").classList.remove("in");
-  window.scrollTo({ top: 0 });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  introTargetProgress = 0;
+  startIntroIrisAnimation();
 }
 
 function bindScrollFlow() {
-  // Wheel interaction at Intro
+  updateIntroIrisView(0);
+
+  // Wheel interaction on Homepage / Intro
   window.addEventListener(
     "wheel",
     (e) => {
-      if (!entered && e.deltaY > 0) {
-        enterSiteToHome();
-      } else if (entered && window.scrollY <= 0 && e.deltaY < -15) {
-        const hash = location.hash.replace("#", "") || "/home";
-        if (hash === "/home" || !hash) {
-          returnToIntro();
+      const hash = location.hash.replace("#", "") || "/home";
+      if (hash !== "/home" && hash !== "") return;
+
+      // If on intro screen (closed or opening):
+      if (introCurrentProgress < 0.98) {
+        e.preventDefault();
+        const delta = e.deltaY;
+        if (delta > 0) {
+          introTargetProgress = Math.min(1, introTargetProgress + delta * 0.0018);
+        } else if (delta < 0) {
+          introTargetProgress = Math.max(0, introTargetProgress + delta * 0.0018);
         }
+        startIntroIrisAnimation();
+        return;
+      }
+
+      // If fully open on home page, and user scrolls back to the very top and scrolls up:
+      if (introCurrentProgress >= 0.98 && window.scrollY <= 4 && e.deltaY < 0) {
+        e.preventDefault();
+        introTargetProgress = Math.max(0, introTargetProgress + e.deltaY * 0.0018);
+        startIntroIrisAnimation();
       }
     },
-    { passive: true }
+    { passive: false }
   );
 
-  // Touch gesture
+  // Touch gestures for Mobile / Tablet
   let touchStartY = 0;
+  let touchMoving = false;
+
   window.addEventListener(
     "touchstart",
     (e) => {
+      const hash = location.hash.replace("#", "") || "/home";
+      if (hash !== "/home" && hash !== "") return;
       touchStartY = e.touches[0].clientY;
+      touchMoving = true;
     },
     { passive: true }
   );
@@ -493,34 +590,63 @@ function bindScrollFlow() {
   window.addEventListener(
     "touchmove",
     (e) => {
-      const touchY = e.touches[0].clientY;
-      const diff = touchStartY - touchY;
-      if (!entered && diff > 30) {
-        enterSiteToHome();
-      } else if (entered && window.scrollY <= 0 && diff < -30) {
-        const hash = location.hash.replace("#", "") || "/home";
-        if (hash === "/home" || !hash) {
-          returnToIntro();
-        }
+      const hash = location.hash.replace("#", "") || "/home";
+      if (hash !== "/home" && hash !== "" || !touchMoving) return;
+
+      const currentY = e.touches[0].clientY;
+      const diff = touchStartY - currentY; // positive = swipe up (scroll down)
+
+      if (introCurrentProgress < 0.98) {
+        e.preventDefault();
+        introTargetProgress = Math.max(0, Math.min(1, introTargetProgress + diff * 0.0045));
+        touchStartY = currentY;
+        startIntroIrisAnimation();
+        return;
       }
+
+      // Dragging down at top of homepage closes circle
+      if (introCurrentProgress >= 0.98 && window.scrollY <= 4 && diff < -8) {
+        e.preventDefault();
+        introTargetProgress = Math.max(0, Math.min(1, introTargetProgress + diff * 0.0045));
+        touchStartY = currentY;
+        startIntroIrisAnimation();
+      }
+    },
+    { passive: false }
+  );
+
+  window.addEventListener(
+    "touchend",
+    () => {
+      touchMoving = false;
+      const hash = location.hash.replace("#", "") || "/home";
+      if (hash !== "/home" && hash !== "") return;
+
+      if (introTargetProgress > 0.35 && introTargetProgress < 1) {
+        introTargetProgress = 1;
+      } else if (introTargetProgress <= 0.35 && introTargetProgress > 0) {
+        introTargetProgress = 0;
+      }
+      startIntroIrisAnimation();
     },
     { passive: true }
   );
 
   // Keyboard navigation
   window.addEventListener("keydown", (e) => {
-    if (!entered && (e.key === "ArrowDown" || e.key === " " || e.key === "Enter")) {
+    if (introCurrentProgress < 0.98 && (e.key === "ArrowDown" || e.key === " " || e.key === "Enter")) {
+      e.preventDefault();
       enterSiteToHome();
     }
   });
 
   // Buttons & triggers
   const introBtn = $("introEnterBtn");
-  if (introBtn) introBtn.addEventListener("click", enterSiteToHome);
+  if (introBtn) introBtn.addEventListener("click", () => enterSiteToHome());
 
   const introHint = $("introHint");
   if (introHint) {
-    introHint.addEventListener("click", enterSiteToHome);
+    introHint.addEventListener("click", () => enterSiteToHome());
     introHint.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
