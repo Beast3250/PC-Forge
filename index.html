@@ -52,6 +52,7 @@
           <a href="#/home" data-link class="nav-link" data-route="/home">Home</a>
           <a href="#/" data-link class="nav-link" data-route="/">Store</a>
           <a href="#/builder" data-link class="nav-link" data-route="/builder">Build PC</a>
+          <a href="#/peripherals" data-link class="nav-link" data-route="/peripherals">Peripherals</a>
           <a href="#/about" data-link class="nav-link" data-route="/about">About</a>
           <a href="#/checkout" data-link class="nav-link" data-route="/checkout">Buy</a>
         </nav>
@@ -77,6 +78,7 @@
             <a href="#/home" data-link class="mobile-link" data-route="/home">Home</a>
             <a href="#/" data-link class="mobile-link" data-route="/">Store</a>
             <a href="#/builder" data-link class="mobile-link" data-route="/builder">Build PC</a>
+            <a href="#/peripherals" data-link class="mobile-link" data-route="/peripherals">Peripherals</a>
             <a href="#/about" data-link class="mobile-link" data-route="/about">About</a>
             <a href="#/checkout" data-link class="mobile-link" data-route="/checkout">Buy</a>
           </nav>
@@ -575,6 +577,66 @@
           </div>
         </section>
 
+        <!-- Peripherals Page Section -->
+        <section class="page hidden" id="page-peripherals">
+          <!-- Background Canvas -->
+          <canvas class="periph-bg-canvas" id="periphBgCanvas" aria-hidden="true"></canvas>
+
+          <!-- Mouse Follower Glow -->
+          <div class="periph-cursor-glow" id="periphCursorGlow" aria-hidden="true"></div>
+
+          <!-- Iris Scroll Container -->
+          <div class="periph-iris-container" id="periphIrisContainer">
+            <!-- Glowing Neon Iris Ring (Traces the circular motion) -->
+            <div class="periph-iris-ring" id="periphIrisRing" aria-hidden="true"></div>
+
+            <!-- Black Overlay with Circular Cutout Mask -->
+            <div class="periph-iris-overlay" id="periphIrisOverlay">
+              <!-- Greeting -->
+              <div class="periph-greeting" id="periphGreeting">
+                <span class="periph-greeting-eyebrow">✦ NEXT-GEN ARSENAL ✦</span>
+                <span class="periph-greeting-hi">Hi</span>
+                <p class="periph-greeting-sub">Scroll or click to explore peripherals</p>
+                <button class="periph-enter-btn" id="periphEnterBtn" type="button">
+                  <span>Enter Peripherals</span>
+                  <span class="btn-arrow">↓</span>
+                </button>
+                <div class="periph-scroll-indicator" id="periphScrollCue">
+                  <span class="periph-scroll-line"></span>
+                  <span>scroll to open</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scrollable Content (revealed by iris) -->
+            <div class="periph-scroll-content" id="periphScrollContent">
+              <!-- Hero -->
+              <div class="periph-hero">
+                <span class="periph-eyebrow">✦ GAMING PERIPHERALS ✦</span>
+                <h2 class="periph-title">Level Up Your Setup.</h2>
+                <p class="periph-lede">Premium keyboards, precision mice, pro controllers & cutting-edge monitors from the world's top brands.</p>
+              </div>
+
+              <!-- Category Filter -->
+              <div class="periph-filter-bar" id="periphFilterBar">
+                <button class="periph-filter-chip active" data-periph-filter="all" type="button">All Peripherals</button>
+                <button class="periph-filter-chip" data-periph-filter="keyboard" type="button">⌨️ Keyboards</button>
+                <button class="periph-filter-chip" data-periph-filter="mouse" type="button">🖱️ Mice</button>
+                <button class="periph-filter-chip" data-periph-filter="controller" type="button">🎮 Controllers</button>
+                <button class="periph-filter-chip" data-periph-filter="monitor" type="button">🖥️ Monitors</button>
+              </div>
+
+              <!-- Product Grid -->
+              <div class="periph-product-grid" id="periphProductGrid"></div>
+
+              <!-- Footer -->
+              <div class="periph-footer">
+                <p>All brands and trademarks belong to their respective owners. Prices reflect current MSRP.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Checkout Page Section -->
         <section class="page hidden" id="page-checkout">
           <div class="hero">
@@ -623,6 +685,8 @@
     <div class="toast" id="toast"></div>
 
     <script src="js/data.js"></script>
+    <script src="js/peripherals-data.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/peripherals.js"></script>
   </body>
 </html>

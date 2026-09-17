@@ -3930,8 +3930,842 @@ img, canvas, svg { max-width: 100%; }
   .hero-actions, .card-actions { grid-template-columns: 1fr; flex-direction: column; }
   .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .stat-pill:last-child { grid-column: 1 / -1; }
-  .chassis-3d-hud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chassis-3d-hud { grid-template-columns: repeat(2, 1fr); }
   .argb-control-group { width: 100%; }
 }
 
 
+/* ==========================================================================
+   PERIPHERALS PAGE — Circular Iris Reveal, Mouse Follower, Glassmorphism
+   ========================================================================== */
+
+/* ── Page Container (Light Purple + Glowish Green Mixture) ── */
+#page-peripherals {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 15%, rgba(192, 132, 252, 0.45) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 55% at 85% 20%, rgba(74, 222, 128, 0.4) 0%, transparent 65%),
+    radial-gradient(ellipse 80% 70% at 50% 55%, rgba(216, 180, 254, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 85% 85%, rgba(52, 211, 153, 0.42) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 55% at 15% 90%, rgba(168, 85, 247, 0.35) 0%, transparent 65%),
+    linear-gradient(135deg, #ebdcfc 0%, #d1fae5 32%, #f5edff 65%, #cbf7d8 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+  color: #1a102f;
+}
+
+/* ── Background Floating Particle Canvas ── */
+.periph-bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ── Mouse Follower Glow (Greenish color with very light opacity) ── */
+.periph-cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(74, 222, 128, 0.22) 0%,
+    rgba(52, 211, 153, 0.12) 40%,
+    rgba(16, 185, 129, 0.03) 65%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: 5;
+  filter: blur(14px);
+  will-change: transform;
+  transform: translate(-600px, -600px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* ── Iris Container ── */
+.periph-iris-container {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+}
+
+/* ── Glowing Neon Iris Ring (The loop tracing the circular motion) ── */
+.periph-iris-ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2.5px solid rgba(110, 231, 183, 0.9);
+  box-shadow:
+    0 0 25px rgba(74, 222, 128, 0.6),
+    0 0 55px rgba(168, 85, 247, 0.4),
+    inset 0 0 25px rgba(74, 222, 128, 0.45);
+  pointer-events: none;
+  z-index: 95;
+  opacity: 0;
+  will-change: width, height, opacity;
+  transition: opacity 0.15s ease;
+}
+
+/* ── Iris Overlay (Pure Black Screen with Circular Cutout Mask) ── */
+.periph-iris-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000000;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0%, #000000 1.5px);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0%, #000000 1.5px);
+  will-change: mask-image, -webkit-mask-image, opacity;
+}
+
+/* ── Greeting Inside Iris ── */
+.periph-greeting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 24px;
+  will-change: transform, opacity;
+  z-index: 92;
+  cursor: pointer;
+  user-select: none;
+}
+
+.periph-greeting-eyebrow {
+  font-family: var(--font-b);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  padding: 6px 18px;
+  border-radius: 100px;
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+}
+
+.periph-greeting-hi {
+  font-family: var(--font-d);
+  font-size: clamp(4.5rem, 18vw, 11rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #a7f3d0 0%, #d8b4fe 40%, #4ade80 75%, #e9d5ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: periphHiPulse 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 35px rgba(74, 222, 128, 0.4));
+}
+
+@keyframes periphHiPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 25px rgba(74, 222, 128, 0.35));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 55px rgba(192, 132, 252, 0.5));
+    transform: scale(1.02);
+  }
+}
+
+.periph-greeting-sub {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-b);
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  max-width: 480px;
+  line-height: 1.5;
+}
+
+.periph-enter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
+  color: #ffffff;
+  border: none;
+  padding: 13px 32px;
+  border-radius: 100px;
+  font-family: var(--font-b);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 22px rgba(16, 185, 129, 0.45);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s;
+  margin-top: 6px;
+}
+
+.periph-enter-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.55);
+}
+
+.periph-enter-btn .btn-arrow {
+  font-size: 1.1rem;
+  transition: transform 0.25s ease;
+}
+
+.periph-enter-btn:hover .btn-arrow {
+  transform: translateY(3px);
+}
+
+.periph-scroll-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.periph-scroll-line {
+  display: block;
+  width: 2px;
+  height: 38px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, transparent, #4ade80, transparent);
+  animation: periphScrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes periphScrollPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scaleY(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.1);
+  }
+}
+
+/* ── Scrollable Content (Revealed through iris opening) ── */
+.periph-scroll-content {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease;
+  padding: 110px 24px 70px;
+  position: relative;
+  z-index: 15;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ── Hero ── */
+.periph-hero {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 44px;
+  padding: 0 16px;
+}
+
+.periph-eyebrow {
+  display: inline-block;
+  font-family: var(--font-b);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #431407;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 8px 22px;
+  border-radius: 100px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
+}
+
+.periph-title {
+  font-family: var(--font-d);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #1e1b4b;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 20px rgba(139, 92, 246, 0.15);
+}
+
+.periph-lede {
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  line-height: 1.6;
+  color: #312e81;
+  max-width: 620px;
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+/* ── Category Filter Bar ── */
+.periph-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding: 6px;
+}
+
+.periph-filter-chip {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  color: #1e1b4b;
+  font-family: var(--font-b);
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 3px 12px rgba(139, 92, 246, 0.08);
+  user-select: none;
+}
+
+.periph-filter-chip:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.18);
+  border-color: #a78bfa;
+}
+
+.periph-filter-chip.active {
+  background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ── Product Grid ── */
+.periph-product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  transition: opacity 0.2s ease;
+}
+
+.periph-product-grid.periph-grid-fade {
+  opacity: 0.4;
+  transform: scale(0.99);
+}
+
+/* ── Glassmorphism Product Card ── */
+.periph-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  box-shadow:
+    0 10px 30px rgba(139, 92, 246, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.03);
+  animation: periphCardIn 0.5s ease backwards;
+}
+
+@keyframes periphCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.periph-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 20px 45px rgba(139, 92, 246, 0.22),
+    0 0 25px rgba(74, 222, 128, 0.25);
+  border-color: #34d399;
+}
+
+/* Card Image Wrap */
+.periph-card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(216, 180, 254, 0.35) 0%, rgba(167, 243, 208, 0.4) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.periph-card-img {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
+}
+
+.periph-card:hover .periph-card-img {
+  transform: scale(1.08);
+}
+
+.periph-card-brand {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(15, 12, 29, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-family: var(--font-b);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.periph-stock-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(16, 185, 129, 0.9);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.periph-stock-badge.out {
+  background: rgba(239, 68, 68, 0.9);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Card Body */
+.periph-card-body {
+  padding: 16px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.periph-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.periph-card-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b21a8;
+  background: rgba(147, 51, 234, 0.12);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.periph-card-cat-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #065f46;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.periph-card-name {
+  font-family: var(--font-d);
+  font-size: clamp(0.98rem, 1.8vw, 1.18rem);
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.periph-card-spec {
+  font-size: 0.78rem;
+  color: #4338ca;
+  line-height: 1.45;
+  margin-bottom: 16px;
+  opacity: 0.85;
+  flex-grow: 1;
+}
+
+/* Card Footer with Price and Buttons */
+.periph-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.periph-price-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.periph-price-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.periph-card-price {
+  font-family: var(--font-d);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  line-height: 1.1;
+}
+
+.periph-card-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Add to Cart Button */
+.periph-add-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(139, 92, 246, 0.12);
+  color: #6b21a8;
+  border: 1.5px solid rgba(139, 92, 246, 0.3);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-family: var(--font-b);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.periph-add-cart-btn:hover {
+  background: rgba(139, 92, 246, 0.25);
+  border-color: #8b5cf6;
+  transform: translateY(-1px);
+}
+
+.periph-add-cart-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.periph-add-cart-btn.btn-added {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #10b981;
+}
+
+/* Buy Now Button */
+.periph-buy-now-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
+  color: #ffffff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-family: var(--font-b);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.periph-buy-now-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
+}
+
+.periph-buy-now-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* ── Footer ── */
+.periph-footer {
+  text-align: center;
+  padding: 50px 16px 30px;
+  color: #4338ca;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   PERIPHERALS PAGE — ULTRA-RESPONSIVE BREAKPOINTS (Tablet, Mobile, 300px)
+   ========================================================================== */
+
+/* ── Laptop / Large Tablet (≤1150px) ── */
+@media (max-width: 1150px) {
+  .periph-product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* ── Tablet (≤850px) ── */
+@media (max-width: 850px) {
+  .periph-product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .periph-scroll-content {
+    padding: 95px 18px 50px;
+  }
+
+  .periph-title {
+    font-size: 2.5rem;
+  }
+
+  .periph-cursor-glow {
+    display: none;
+  }
+}
+
+/* ── Phones (≤600px) — Pixel, iPhone ── */
+@media (max-width: 600px) {
+  .periph-scroll-content {
+    padding: 85px 14px 40px;
+  }
+
+  .periph-hero {
+    margin-bottom: 30px;
+  }
+
+  .periph-eyebrow {
+    font-size: 0.72rem;
+    padding: 6px 16px;
+  }
+
+  .periph-title {
+    font-size: clamp(1.8rem, 7.5vw, 2.4rem);
+  }
+
+  .periph-lede {
+    font-size: 0.88rem;
+  }
+
+  .periph-filter-bar {
+    gap: 8px;
+    margin-bottom: 26px;
+  }
+
+  .periph-filter-chip {
+    font-size: 0.78rem;
+    padding: 8px 16px;
+  }
+
+  .periph-product-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .periph-card-body {
+    padding: 14px 16px 18px;
+  }
+
+  .periph-card-name {
+    font-size: 1.05rem;
+  }
+
+  .periph-card-price {
+    font-size: 1.25rem;
+  }
+
+  .periph-add-cart-btn,
+  .periph-buy-now-btn {
+    padding: 9px 15px;
+    font-size: 0.82rem;
+  }
+
+  .periph-greeting-hi {
+    font-size: clamp(3.8rem, 20vw, 7rem);
+  }
+
+  .periph-enter-btn {
+    padding: 12px 26px;
+    font-size: 0.88rem;
+  }
+}
+
+/* ── Small Phones (≤400px down to 300px) ── */
+@media (max-width: 400px) {
+  .periph-scroll-content {
+    padding: 80px 10px 30px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .periph-hero {
+    margin-bottom: 22px;
+    padding: 0 6px;
+  }
+
+  .periph-title {
+    font-size: 1.6rem;
+  }
+
+  .periph-lede {
+    font-size: 0.82rem;
+  }
+
+  .periph-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+    padding: 0;
+  }
+
+  .periph-filter-chip {
+    font-size: 0.72rem;
+    padding: 7px 12px;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .periph-product-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .periph-card {
+    border-radius: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .periph-card-body {
+    padding: 12px 14px 16px;
+  }
+
+  .periph-card-name {
+    font-size: 0.96rem;
+  }
+
+  .periph-card-spec {
+    font-size: 0.72rem;
+    margin-bottom: 12px;
+  }
+
+  .periph-card-footer {
+    padding-top: 10px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .periph-card-price {
+    font-size: 1.15rem;
+  }
+
+  .periph-card-btns {
+    gap: 4px;
+  }
+
+  .periph-add-cart-btn,
+  .periph-buy-now-btn {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
+
+  .periph-greeting-hi {
+    font-size: clamp(3.2rem, 18vw, 5.5rem);
+  }
+
+  .periph-greeting-sub {
+    font-size: 0.8rem;
+  }
+
+  .periph-enter-btn {
+    padding: 10px 22px;
+    font-size: 0.82rem;
+  }
+}
+
+/* ── Narrow Devices (~300px) ── */
+@media (max-width: 320px) {
+  .periph-scroll-content {
+    padding: 75px 6px 20px;
+  }
+
+  .periph-filter-chip {
+    width: 100%;
+    font-size: 0.7rem;
+    padding: 8px;
+  }
+
+  .periph-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .periph-card-btns {
+    width: 100%;
+    display: flex;
+  }
+
+  .periph-add-cart-btn,
+  .periph-buy-now-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .periph-greeting-hi {
+    font-size: 2.8rem;
+  }
+}

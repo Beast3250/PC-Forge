@@ -45,10 +45,19 @@ function cartCount() {
   return n;
 }
 
+function findProduct(id) {
+  const p = PRODUCTS.find((x) => x.id === id);
+  if (p) return p;
+  if (typeof PERIPHERALS !== "undefined") {
+    return PERIPHERALS.find((x) => x.id === id) || null;
+  }
+  return null;
+}
+
 function cartTotal() {
   let t = 0;
   cart.forEach((q, id) => {
-    const p = PRODUCTS.find((x) => x.id === id);
+    const p = findProduct(id);
     if (p) t += p.price * q;
   });
   return t;
@@ -57,7 +66,9 @@ function cartTotal() {
 function addToCart(id, qty = 1) {
   cart.set(id, (cart.get(id) || 0) + qty);
   renderCart();
-  toast("Added to cart");
+  const prod = findProduct(id);
+  const name = prod ? prod.name : "Item";
+  toast(`Added ${name} to cart`);
 }
 
 function setQty(id, qty) {
@@ -74,14 +85,16 @@ function renderCart() {
 
   const rows = [...cart.entries()]
     .map(([id, qty]) => {
-      const p = PRODUCTS.find((x) => x.id === id);
+      const p = findProduct(id);
       if (!p) return "";
+      const catName = (typeof PERIPH_CAT_LABEL !== "undefined" && PERIPH_CAT_LABEL[p.cat]) || (typeof CAT_LABEL !== "undefined" && CAT_LABEL[p.cat]) || p.cat;
+      const fallbackSrc = typeof getPeriphFallbackSvg === "function" ? getPeriphFallbackSvg(p.id) : "";
       return `<div class="cart-row">
         <div class="cart-row-left">
-          <img src="${p.image}" class="cart-item-thumb" alt="${p.name}" />
+          <img src="${p.image}" class="cart-item-thumb" alt="${p.name}" ${fallbackSrc ? `onerror="this.onerror=null;this.src='${fallbackSrc}'"` : ""} />
           <div>
             <strong>${p.name}</strong>
-            <div class="meta">${CAT_LABEL[p.cat] || p.cat} · ${money(p.price)}</div>
+            <div class="meta">${catName} · ${money(p.price)}</div>
           </div>
         </div>
         <div class="qty">
@@ -351,6 +364,8 @@ function route() {
     page = "checkout";
   } else if (hash.startsWith("/about")) {
     page = "about";
+  } else if (hash.startsWith("/peripherals")) {
+    page = "peripherals";
   } else if (hash === "/" || hash.startsWith("/store")) {
     page = "store";
   } else {
@@ -367,6 +382,7 @@ function route() {
       (page === "home" && route === "/home") ||
       (page === "store" && route === "/") ||
       (page === "builder" && route === "/builder") ||
+      (page === "peripherals" && route === "/peripherals") ||
       (page === "about" && route === "/about") ||
       (page === "checkout" && route === "/checkout");
     a.classList.toggle("active", isAct);
@@ -379,6 +395,11 @@ function route() {
   if (page === "builder" && preview3DVisible) {
     setTimeout(resize3D, 80);
     setTimeout(resize3D, 250);
+  }
+
+  // Initialize peripherals page
+  if (page === "peripherals" && typeof initPeripheralsPage === "function") {
+    setTimeout(initPeripheralsPage, 50);
   }
 }
 
